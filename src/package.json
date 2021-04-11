@@ -1,0 +1,12 @@
+{
+  "name": "kaholo-plugin-azure-cli",
+  "version": "1.0.0",
+  "description": "Azure CLI wrapper plugin for Kaholo",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Kaholo Team",
+  "license": "ISC",
+  "dependencies": {}
+}
