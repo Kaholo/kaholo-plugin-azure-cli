@@ -1,6 +1,6 @@
 {
   "name": "kaholo-plugin-azure-cli",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Azure CLI wrapper plugin for Kaholo",
   "main": "app.js",
   "scripts": {

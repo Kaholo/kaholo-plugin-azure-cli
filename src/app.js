@@ -1,4 +1,5 @@
 const { execAzCliCmd, parseUniversalArtifactArgs, azDevOpsLogin } = require("./helpers");
+const { listScope } = require("./autocomplete"); 
 
 async function downloadUniArti(action, settings){
 	//login to devops 
@@ -40,6 +41,7 @@ async function publishUniArti(action, settings){
 
 module.exports = {
 	downloadUniArti,
-	publishUniArti
+	publishUniArti,
+	listScope
 }
 
