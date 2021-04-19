@@ -29,10 +29,10 @@ function parseUniversalArtifactArgs(action, settings, args){
     // parse additional params
     const orgUrl = (action.params.orgUrl || settings.devOpsOrgUrl || "").trim();
     const project = (action.params.project || settings.devOpsProject || "").trim();
-    const scope = (action.params.scope || "organization").trim();
+    const scope = parseAutoComplete(action.params.scope || "organization");
     const subscription = (action.params.subscription || settings.subscription || "").trim();
 
-    if (orgUrl) args.push("--org", orgUrl);
+    if (orgUrl) args.push("--organization", orgUrl);
     if (project) args.push("-p", project);
     if (scope) args.push("--scope", scope);
     if (subscription) args.push("--subscription", subscription);
@@ -76,9 +76,15 @@ async function azDevOpsLogin(action, settings){
     });
 }
 
+function parseAutoComplete(arg){
+    try { 
+        if (arg.id) return arg.id
+    } catch (err) {}
+    return arg;
+}
+
 module.exports = {
     execAzCliCmd,
     parseUniversalArtifactArgs,
     azDevOpsLogin
-    
 };

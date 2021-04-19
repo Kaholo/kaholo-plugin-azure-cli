@@ -5,7 +5,7 @@
   "execProgram": "node",
   "main": "app.js",
   "imgUrl": "logo.png",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "settings" : [
     {
       "name": "azPath",
@@ -71,17 +71,9 @@
         {
           "name": "scope",
           "viewName": "Scope",
-          "type": "options",
-          "options": [
-            {
-              "id": "project",
-              "name": "Project"
-            },
-            {
-              "id": "organization",
-              "name": "Organization"
-            }
-          ]
+          "type": "autocomplete",
+          "autocompleteType": "function",
+          "functionName": "listScope"
         },
         {
           "name": "fileFilter",
@@ -137,17 +129,9 @@
         {
           "name": "scope",
           "viewName": "Scope",
-          "type": "options",
-          "options": [
-            {
-              "id": "project",
-              "name": "Project"
-            },
-            {
-              "id": "organization",
-              "name": "Organization"
-            }
-          ]
+          "type": "autocomplete",
+          "autocompleteType": "function",
+          "functionName": "listScope"
         },
         {
           "name": "description",
