@@ -5,7 +5,9 @@
   "execProgram": "node",
   "main": "app.js",
   "imgUrl": "logo.png",
-  "version": "1.0.2",
+  "version": "1.0.3",
+  "description": "Integration with Azure CLI.",
+  "category": "CLOUD",
   "settings" : [
     {
       "name": "azPath",
