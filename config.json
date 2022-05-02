@@ -1,154 +1,67 @@
 {
   "name": "Azure-CLI",
+  "viewName": "Azure CLI",
   "type": "executer",
-  "exposeRoute": false,
   "execProgram": "node",
   "main": "app.js",
   "imgUrl": "logo.png",
-  "version": "1.0.3",
+  "version": "2.0.0",
   "description": "Integration with Azure CLI.",
   "category": "CLOUD",
   "settings" : [
     {
-      "name": "azPath",
-      "viewName": "Azure CLI Path",
-      "type": "string"
+      "name": "servicePrincipalId",
+      "viewName": "Service Principal ID",
+      "description": "UUID of the Service Principal.",
+      "type": "vault",
+      "placeholder": "28cf11cad-2654-3721-6c7b-a89090db8abb"
     },
     {
-      "name": "devOpsOrgUrl",
-      "viewName": "DevOps Organization Server URL",
-      "type": "string"
-    },
-    {
-      "name": "devOpsProject",
-      "viewName": "Default DevOps Project",
-      "type": "string"
-    },
-    {
-      "name": "subscription",
-      "viewName": "Default DevOps Subscription",
-      "type": "string"
-    },
-    {
-      "name": "devOpsToken",
-      "viewName": "DevOps Token",
+      "name": "servicePrincipalCredential",
+      "viewName": "Service Principal Credential",
+      "description": "Password or certificate for the Service Principal.",
       "type": "vault"
+    },
+    {
+      "name": "tenantId",
+      "viewName": "Tenant ID",
+      "description": "UUID of the Tenant.",
+      "type": "string",
+      "placeholder": "13bd1f78-5426-4ed3-c67b-d9a1a1ec9bc6"
     }
   ],
   "methods": [
     {
-      "name": "downloadUniArti",
-      "viewName": "Download Universal Artifact",
+      "name": "runCommand",
+      "viewName": "Run Command",
       "params": [
         {
-          "name": "path",
-          "viewName": "Save Path",
-          "type": "string"
+          "name": "servicePrincipalId",
+          "viewName": "Service Principal ID",
+          "description": "UUID of the Service Principal.",
+          "type": "vault",
+          "placeholder": "28cf11cad-2654-3721-6c7b-a89090db8abb"
         },
         {
-          "name": "orgUrl",
-          "viewName": "Organization Server URL",
-          "type": "string"
-        },
-        {
-          "name": "project",
-          "viewName": "Project",
-          "type": "string"
-        },
-        {
-          "name": "feed",
-          "viewName": "Feed",
-          "type": "string"
-        },
-        {
-          "name": "package",
-          "viewName": "Package Name",
-          "type": "string"
-        },
-        {
-          "name": "version",
-          "viewName": "Version",
-          "type": "string"
-        },
-        {
-          "name": "scope",
-          "viewName": "Scope",
-          "type": "autocomplete",
-          "autocompleteType": "function",
-          "functionName": "listScope"
-        },
-        {
-          "name": "fileFilter",
-          "viewName": "File Filter",
-          "type": "string"
-        },
-        {
-          "name": "subscription",
-          "viewName": "Subscription",
-          "type": "string"
-        },
-        {
-          "name": "devOpsToken",
-          "viewName": "DevOps Token",
+          "name": "servicePrincipalCredential",
+          "viewName": "Service Principal Credential",
+          "description": "Password or certificate for the Service Principal.",
           "type": "vault"
-        }
-      ]
-    },
-    {
-      "name": "publishUniArti",
-      "viewName": "Publish Universal Artifact",
-      "params": [
-        {
-          "name": "path",
-          "viewName": "Upload Path",
-          "type": "string"
         },
         {
-          "name": "orgUrl",
-          "viewName": "Organization Server URL",
-          "type": "string"
+          "name": "tenantId",
+          "viewName": "Tenant ID",
+          "description": "UUID of the Tenant.",
+          "type": "string",
+          "placeholder": "13bd1f78-5426-4ed3-c67b-d9a1a1ec9bc6"
         },
         {
-          "name": "project",
-          "viewName": "Project",
-          "type": "string"
-        },
-        {
-          "name": "feed",
-          "viewName": "Feed",
-          "type": "string"
-        },
-        {
-          "name": "package",
-          "viewName": "Package Name",
-          "type": "string"
-        },
-        {
-          "name": "version",
-          "viewName": "Version",
-          "type": "string"
-        },
-        {
-          "name": "scope",
-          "viewName": "Scope",
-          "type": "autocomplete",
-          "autocompleteType": "function",
-          "functionName": "listScope"
-        },
-        {
-          "name": "description",
-          "viewName": "Description",
-          "type": "string"
-        },
-        {
-          "name": "subscription",
-          "viewName": "Subscription",
-          "type": "string"
-        },
-        {
-          "name": "devOpsToken",
-          "viewName": "DevOps Token",
-          "type": "vault"
+          "name": "command",
+          "viewName": "Command",
+          "type": "text",
+          "description": "Azure CLI command to run in the docker container.",
+          "placeholder": "ad app permission add ...",
+          "required": true
         }
       ]
     }
