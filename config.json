@@ -1,0 +1,69 @@
+{
+  "name": "Azure-CLI",
+  "viewName": "Azure CLI",
+  "type": "executer",
+  "execProgram": "node",
+  "main": "app.js",
+  "imgUrl": "logo.png",
+  "version": "2.0.0",
+  "description": "Integration with Azure CLI.",
+  "category": "CLOUD",
+  "settings" : [
+    {
+      "name": "servicePrincipalId",
+      "viewName": "Service Principal ID",
+      "description": "UUID of the Service Principal.",
+      "type": "vault",
+      "placeholder": "28cf11cad-2654-3721-6c7b-a89090db8abb"
+    },
+    {
+      "name": "servicePrincipalCredential",
+      "viewName": "Service Principal Credential",
+      "description": "Password or certificate for the Service Principal.",
+      "type": "vault"
+    },
+    {
+      "name": "tenantId",
+      "viewName": "Tenant ID",
+      "description": "UUID of the Tenant.",
+      "type": "string",
+      "placeholder": "13bd1f78-5426-4ed3-c67b-d9a1a1ec9bc6"
+    }
+  ],
+  "methods": [
+    {
+      "name": "runCommand",
+      "viewName": "Run Command",
+      "params": [
+        {
+          "name": "servicePrincipalId",
+          "viewName": "Service Principal ID",
+          "description": "UUID of the Service Principal.",
+          "type": "vault",
+          "placeholder": "28cf11cad-2654-3721-6c7b-a89090db8abb"
+        },
+        {
+          "name": "servicePrincipalCredential",
+          "viewName": "Service Principal Credential",
+          "description": "Password or certificate for the Service Principal.",
+          "type": "vault"
+        },
+        {
+          "name": "tenantId",
+          "viewName": "Tenant ID",
+          "description": "UUID of the Tenant.",
+          "type": "string",
+          "placeholder": "13bd1f78-5426-4ed3-c67b-d9a1a1ec9bc6"
+        },
+        {
+          "name": "command",
+          "viewName": "Command",
+          "type": "text",
+          "description": "Azure CLI command to run in the docker container.",
+          "placeholder": "ad app permission add ...",
+          "required": true
+        }
+      ]
+    }
+  ]
+}

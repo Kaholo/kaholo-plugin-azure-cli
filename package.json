@@ -1,0 +1,19 @@
+{
+  "name": "kaholo-plugin-azure-cli",
+  "description": "Azure CLI wrapper plugin for Kaholo",
+  "main": "app.js",
+  "scripts": {
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint . --fix"
+  },
+  "author": "Kaholo Team",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "8.14.0",
+    "eslint-config-airbnb-base": "15.0.0",
+    "eslint-plugin-import": "2.26.0"
+  },
+  "dependencies": {
+    "kaholo-plugin-library": "github:Kaholo/kaholo-plugin-library#v1.0.2"
+  }
+}
