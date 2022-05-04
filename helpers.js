@@ -20,7 +20,7 @@ function mapAndValidateCredentials(params) {
   return credentials;
 }
 
-function tryParseAzureOutput(output) {
+function tryParseAzureCliOutput(output) {
   try {
     return { ...output, stdout: JSON.parse(output.stdout.trim()) };
   } catch {
@@ -30,5 +30,5 @@ function tryParseAzureOutput(output) {
 
 module.exports = {
   mapAndValidateCredentials,
-  tryParseAzureOutput,
+  tryParseAzureCliOutput,
 };

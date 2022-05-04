@@ -1,6 +1,6 @@
 const childProcess = require("child_process");
 const { promisify } = require("util");
-const { tryParseAzureOutput } = require("./helpers");
+const { tryParseAzureCliOutput } = require("./helpers");
 const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
 
 const exec = promisify(childProcess.exec);
@@ -17,21 +17,17 @@ function createDockerCommand(userCommand) {
   `.trim();
 }
 
-function createAzCommand(userInput) {
+function createAzureCliCommand(userInput) {
   const additionalArguments = ["-o", "json"];
-  return `${userInput} ${additionalArguments.join(" ")}`.trim();
+  return `${userInput.startsWith("az ") ? "" : "az"} ${userInput} ${additionalArguments.join(" ")}`.trim();
 }
 
 function sanitizeUserCommand(command) {
-  let sanitized = command;
-  if (!command.toLowerCase().startsWith("az ")) {
-    sanitized = `az ${command}`;
-  }
-  return `$(echo "${sanitized}")`;
+  return `$(echo "${command}")`;
 }
 
 async function execute({ command, credentials }) {
-  const azCommand = sanitizeUserCommand(createAzCommand(command));
+  const azCommand = sanitizeUserCommand(createAzureCliCommand(command));
   const dockerCommand = createDockerCommand(azCommand);
   try {
     const output = await exec(dockerCommand, {
@@ -40,10 +36,10 @@ async function execute({ command, credentials }) {
         COMMAND: azCommand,
       },
     });
-    return tryParseAzureOutput(output);
+    return tryParseAzureCliOutput(output);
   } catch (error) {
     if (error.stdout) {
-      throw tryParseAzureOutput(error);
+      throw tryParseAzureCliOutput(error);
     }
     throw new Error(error.stderr ?? error.message ?? error);
   }
