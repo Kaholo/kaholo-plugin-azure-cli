@@ -12,8 +12,7 @@ function createDockerCommand(userCommand) {
     -e AZURE_SERVICE_PRINCIPAL_CREDENTIAL \
     -e AZURE_TENANT_ID \
     -e COMMAND \
-    --rm \
-    ${DOCKER_IMAGE} \
+    --rm ${DOCKER_IMAGE} \
     ${AZURE_LOGIN_COMMAND} > /dev/null && ${userCommand}
   `.trim();
 }
