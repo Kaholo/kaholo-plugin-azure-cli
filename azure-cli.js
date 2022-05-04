@@ -1,5 +1,9 @@
-const { exec, tryParseAzureOutput } = require("./helpers");
+const childProcess = require("child_process");
+const { promisify } = require("util");
+const { tryParseAzureOutput } = require("./helpers");
 const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
+
+const exec = promisify(childProcess.exec);
 
 function createDockerCommand(userCommand) {
   return `
@@ -14,7 +18,7 @@ function createDockerCommand(userCommand) {
   `.trim();
 }
 
-function createAzureCommand(userInput) {
+function createAzCommand(userInput) {
   const additionalArguments = ["-o", "json"];
   return `${userInput} ${additionalArguments.join(" ")}`.trim();
 }
@@ -28,13 +32,13 @@ function sanitizeUserCommand(command) {
 }
 
 async function execute({ command, credentials }) {
-  const azureCommand = sanitizeUserCommand(createAzureCommand(command));
-  const dockerCommand = createDockerCommand(azureCommand);
+  const azCommand = sanitizeUserCommand(createAzCommand(command));
+  const dockerCommand = createDockerCommand(azCommand);
   try {
     const output = await exec(dockerCommand, {
       env: {
         ...credentials,
-        COMMAND: azureCommand,
+        COMMAND: azCommand,
       },
     });
     return tryParseAzureOutput(output);

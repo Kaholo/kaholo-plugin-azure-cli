@@ -1,9 +1,4 @@
-const { promisify } = require("util");
-const childProcess = require("child_process");
-
-const exec = promisify(childProcess.exec);
-
-function readCredentials(params) {
+function mapAndValidateCredentials(params) {
   const credentials = {
     AZURE_SERVICE_PRINCIPAL_ID: params.servicePrincipalId,
     AZURE_SERVICE_PRINCIPAL_CREDENTIAL: params.servicePrincipalCredential,
@@ -34,7 +29,6 @@ function tryParseAzureOutput(output) {
 }
 
 module.exports = {
-  readCredentials,
+  mapAndValidateCredentials,
   tryParseAzureOutput,
-  exec,
 };
