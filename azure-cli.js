@@ -22,18 +22,21 @@ function createAzureCliCommand(userInput) {
   return `${userInput.startsWith("az ") ? "" : "az"} ${userInput} ${additionalArguments.join(" ")}`.trim();
 }
 
-function sanitizeUserCommand(command) {
-  return `$(echo "${command}")`;
-}
-
 async function execute({ command, credentials }) {
-  const azCommand = sanitizeUserCommand(createAzureCliCommand(command));
-  const dockerCommand = createDockerCommand(azCommand);
+  // This is the safest way to escape the user provided command.
+  // By putting the command in double quotes, we can be sure that
+  // every character within the command is escaped, including the
+  // ones that could be used for shell injection (e.g. ';', '|', etc.).
+  // The escaped string needs then to be echoed back to the docker command
+  // in order to be properly executed - simply passing the command in double quotes
+  // would result in docker confusing the quotes as a part of the command.
+  const azureCliCommand = `$(echo "${createAzureCliCommand(command)}")`;
+  const dockerCommand = createDockerCommand(azureCliCommand);
   try {
     const output = await exec(dockerCommand, {
       env: {
         ...credentials,
-        COMMAND: azCommand,
+        COMMAND: azureCliCommand,
       },
     });
     return tryParseAzureCliOutput(output);
