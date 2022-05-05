@@ -1,4 +1,4 @@
 {
   "DOCKER_IMAGE": "mcr.microsoft.com/azure-cli",
-  "AZURE_LOGIN_COMMAND": "az login --service-principal -u $AZURE_SERVICE_PRINCIPAL_ID -p $AZURE_SERVICE_PRINCIPAL_CREDENTIAL --tenant $AZURE_TENANT_ID -o json"
+  "AZURE_LOGIN_COMMAND": "az login --service-principal -u $AZURE_SERVICE_PRINCIPAL_ID -p $AZURE_SERVICE_PRINCIPAL_CREDENTIAL --tenant $AZURE_TENANT_ID -o json > /dev/null"
 }

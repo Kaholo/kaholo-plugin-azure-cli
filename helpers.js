@@ -28,7 +28,14 @@ function tryParseAzureCliOutput(output) {
   }
 }
 
+function createEnvironmentVariableArgumentsString(environmentVariables) {
+  return environmentVariables.map(
+    (environmentVariable) => `-e ${environmentVariable}`,
+  ).join(" ");
+}
+
 module.exports = {
   mapAndValidateCredentials,
   tryParseAzureCliOutput,
+  createEnvironmentVariableArgumentsString,
 };

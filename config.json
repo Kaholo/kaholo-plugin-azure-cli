@@ -32,6 +32,11 @@
   ],
   "methods": [
     {
+      "name": "getCliVersion",
+      "viewName": "Get CLI Version",
+      "params": []
+    },
+    {
       "name": "runCommand",
       "viewName": "Run Command",
       "params": [
