@@ -1,6 +1,6 @@
 const childProcess = require("child_process");
 const { promisify } = require("util");
-const { tryParseAzureCliOutput, createEnvironmentVariableArgumentsString } = require("./helpers");
+const { tryParseAzureCliOutput, createEnvironmentVariableArgumentsString, logToActivityLog } = require("./helpers");
 const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
 
 const exec = promisify(childProcess.exec);
@@ -15,7 +15,8 @@ async function execute({ command, credentials }) {
     command: azureCliCommand,
     environmentVariables: resolveEnvironmentVariables({ areCredentialsProvided }),
   });
-  console.error(dockerCommand);
+  logToActivityLog(`Generated Docker command: ${dockerCommand}`);
+
   try {
     const output = await exec(dockerCommand, { env: credentials });
     return tryParseAzureCliOutput(output);
