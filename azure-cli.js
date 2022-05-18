@@ -1,24 +1,45 @@
 const childProcess = require("child_process");
 const { promisify } = require("util");
-const { tryParseAzureCliOutput, createEnvironmentVariableArgumentsString, logToActivityLog } = require("./helpers");
+const {
+  tryParseAzureCliOutput,
+  createEnvironmentVariableArgumentsString,
+  logToActivityLog,
+  parseUserCommand,
+  createDockerVolumesString,
+} = require("./helpers");
 const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
 
 const exec = promisify(childProcess.exec);
 
 async function execute({ command, credentials }) {
   const areCredentialsProvided = Boolean(credentials);
+  const {
+    volumeConfigs,
+    environmentVariables,
+    replacementCommand,
+  } = await parseUserCommand(command);
+
   const azureCliCommand = createAzureCliCommand({
-    userInput: command,
+    userInput: replacementCommand,
     areCredentialsProvided,
   });
   const dockerCommand = createDockerCommand({
     command: azureCliCommand,
-    environmentVariables: resolveEnvironmentVariables({ areCredentialsProvided }),
+    environmentVariables: [
+      ...resolveEnvironmentVariables({ areCredentialsProvided }),
+      ...Object.keys(environmentVariables),
+    ],
+    volumeConfigs,
   });
   logToActivityLog(`Generated Docker command: ${dockerCommand}`);
 
   try {
-    const output = await exec(dockerCommand, { env: credentials });
+    const output = await exec(dockerCommand, {
+      env: {
+        ...credentials,
+        ...environmentVariables,
+      },
+    });
     return tryParseAzureCliOutput(output);
   } catch (error) {
     if (error.stdout) {
@@ -48,13 +69,15 @@ function createAzureCliCommand({ userInput, areCredentialsProvided = true }) {
   return azureCliCommand;
 }
 
-function createDockerCommand({ command, environmentVariables }) {
+function createDockerCommand({ command, environmentVariables, volumeConfigs }) {
   const environmentVariablesString = createEnvironmentVariableArgumentsString(environmentVariables);
+  const volumesString = createDockerVolumesString(volumeConfigs);
   const stringifiedCommand = JSON.stringify(command);
+
   return `
-    docker run \
-    --rm \
+    docker run --rm \
     ${environmentVariablesString} \
+    ${volumesString} \
     ${DOCKER_IMAGE} sh -c ${stringifiedCommand}
   `.trim();
 }
