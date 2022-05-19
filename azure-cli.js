@@ -16,11 +16,11 @@ async function execute({ command, credentials }) {
   const {
     volumeConfigs,
     environmentVariables,
-    replacementCommand,
+    parsedCommand,
   } = await parseUserCommand(command);
 
   const azureCliCommand = createAzureCliCommand({
-    userInput: replacementCommand,
+    userInput: parsedCommand,
     areCredentialsProvided,
   });
   const dockerCommand = createDockerCommand({

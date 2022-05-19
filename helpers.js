@@ -63,7 +63,7 @@ async function parseUserCommand(command) {
       ...pathMatch,
     }),
   );
-  const replacementCommand = replacePathsWithVolumeConfigEnvironmentVariable(
+  const parsedCommand = replacePathsWithVolumeConfigEnvironmentVariable(
     command,
     matchesWithVolumeConfigs,
   );
@@ -80,7 +80,7 @@ async function parseUserCommand(command) {
   return {
     volumeConfigs,
     environmentVariables,
-    replacementCommand,
+    parsedCommand,
   };
 }
 
