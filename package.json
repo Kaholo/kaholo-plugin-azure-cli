@@ -14,6 +14,6 @@
     "eslint-plugin-import": "2.26.0"
   },
   "dependencies": {
-    "kaholo-plugin-library": "github:Kaholo/kaholo-plugin-library#v1.1.0"
+    "kaholo-plugin-library": "github:Kaholo/kaholo-plugin-library#v1.1.1"
   }
 }
