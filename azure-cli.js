@@ -1,23 +1,30 @@
+const kaholoPluginLibrary = require("kaholo-plugin-library");
 const childProcess = require("child_process");
 const { promisify } = require("util");
+const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
+const { logToActivityLog, validatePaths } = require("./helpers");
 const {
   tryParseAzureCliOutput,
+  createDockerVolumeConfig,
   createEnvironmentVariableArgumentsString,
-  logToActivityLog,
-  parseUserCommand,
   createDockerVolumesString,
-} = require("./helpers");
-const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
+} = require("./docker-helpers");
 
 const exec = promisify(childProcess.exec);
 
 async function execute({ command, credentials }) {
   const areCredentialsProvided = Boolean(credentials);
-  const {
-    volumeConfigs,
-    environmentVariables,
-    parsedCommand,
-  } = await parseUserCommand(command);
+
+  const volumeConfigsWithPathMatch = await createVolumeConfigsWithPathMatch(command);
+  const environmentVariables = volumeConfigsWithPathMatch.reduce((acc, curr) => ({
+    ...acc,
+    ...curr.volumeConfig.environmentVariables,
+  }), {});
+  const parsedCommand = volumeConfigsWithPathMatch.reduce((acc, curr) => (
+    acc.replace(curr.argument, `$${curr.volumeConfig.mountPoint}`)
+  ), command);
+
+  const volumeConfigs = volumeConfigsWithPathMatch.map(({ volumeConfig }) => volumeConfig);
 
   const azureCliCommand = createAzureCliCommand({
     userInput: parsedCommand,
@@ -47,6 +54,19 @@ async function execute({ command, credentials }) {
     }
     throw new Error(error.stderr ?? error.message ?? error);
   }
+}
+
+async function createVolumeConfigsWithPathMatch(command) {
+  const pathMatches = kaholoPluginLibrary.helpers.extractPathsFromCommand(command);
+
+  await validatePaths(pathMatches.map(({ path }) => path));
+
+  return pathMatches.map(
+    (pathMatch) => ({
+      volumeConfig: createDockerVolumeConfig(pathMatch.path),
+      ...pathMatch,
+    }),
+  );
 }
 
 function createAzureCliCommand({ userInput, areCredentialsProvided = true }) {

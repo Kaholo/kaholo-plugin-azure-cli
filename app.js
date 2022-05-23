@@ -1,6 +1,6 @@
 const { bootstrap } = require("kaholo-plugin-library");
 const { execute } = require("./azure-cli");
-const { mapAndValidateCredentials } = require("./helpers");
+const { mapParamsAndValidateCredentials } = require("./helpers");
 
 function getCliVersion() {
   return execute({
@@ -9,7 +9,7 @@ function getCliVersion() {
 }
 
 function runCommand(params) {
-  const credentials = mapAndValidateCredentials(params);
+  const credentials = mapParamsAndValidateCredentials(params);
   return execute({
     command: params.command,
     credentials,
