@@ -1,7 +1,7 @@
 const { access } = require("fs/promises");
 const fs = require("fs");
 
-function mapParamsAndValidateCredentials(params) {
+function mapParamsToCredentialsAndValidate(params) {
   const credentials = {
     AZURE_SERVICE_PRINCIPAL_ID: params.servicePrincipalId,
     AZURE_SERVICE_PRINCIPAL_CREDENTIAL: params.servicePrincipalCredential,
@@ -62,7 +62,7 @@ function generateRandomString() {
 }
 
 module.exports = {
-  mapParamsAndValidateCredentials,
+  mapParamsToCredentialsAndValidate,
   logToActivityLog,
   validatePaths,
   generateRandomString,
