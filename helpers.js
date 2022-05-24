@@ -33,7 +33,7 @@ function logToActivityLog(message) {
   console.error(message);
 }
 
-async function assertPathsExistance(paths) {
+async function assertPathsExistence(paths) {
   const pathsArray = Array.isArray(paths) ? paths : [paths];
 
   const pathExistanceCheckPromises = pathsArray.map(pathExists);
@@ -64,6 +64,6 @@ function generateRandomString() {
 module.exports = {
   mapParamsToCredentialsAndValidate,
   logToActivityLog,
-  assertPathsExistance,
+  assertPathsExistence,
   generateRandomString,
 };

@@ -2,7 +2,7 @@ const kaholoPluginLibrary = require("kaholo-plugin-library");
 const childProcess = require("child_process");
 const { promisify } = require("util");
 const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
-const { logToActivityLog, assertPathsExistance } = require("./helpers");
+const { logToActivityLog, assertPathsExistence } = require("./helpers");
 const {
   tryParseAzureCliOutput,
   createDockerVolumeConfig,
@@ -16,7 +16,7 @@ async function execute({ command, credentials }) {
   const areCredentialsProvided = Boolean(credentials);
 
   const extractedPaths = kaholoPluginLibrary.helpers.extractPathsFromCommand(command);
-  await assertPathsExistance(extractedPaths.map(({ path }) => path));
+  await assertPathsExistence(extractedPaths.map(({ path }) => path));
 
   const volumeConfigsWithPath = extractedPaths.map(
     (extractedPath) => ({
