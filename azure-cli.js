@@ -2,7 +2,7 @@ const kaholoPluginLibrary = require("kaholo-plugin-library");
 const childProcess = require("child_process");
 const { promisify } = require("util");
 const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
-const { logToActivityLog, validatePaths } = require("./helpers");
+const { logToActivityLog, assertPathsExistance } = require("./helpers");
 const {
   tryParseAzureCliOutput,
   createDockerVolumeConfig,
@@ -15,16 +15,25 @@ const exec = promisify(childProcess.exec);
 async function execute({ command, credentials }) {
   const areCredentialsProvided = Boolean(credentials);
 
-  const volumeConfigsWithPathMatch = await createVolumeConfigsWithPathMatch(command);
-  const environmentVariables = volumeConfigsWithPathMatch.reduce((acc, curr) => ({
+  const extractedPaths = kaholoPluginLibrary.helpers.extractPathsFromCommand(command);
+  await assertPathsExistance(extractedPaths.map(({ path }) => path));
+
+  const volumeConfigsWithPath = extractedPaths.map(
+    (extractedPath) => ({
+      volumeConfig: createDockerVolumeConfig(extractedPath.path),
+      ...extractedPath,
+    }),
+  );
+
+  const environmentVariables = volumeConfigsWithPath.reduce((acc, curr) => ({
     ...acc,
     ...curr.volumeConfig.environmentVariables,
   }), {});
-  const parsedCommand = volumeConfigsWithPathMatch.reduce((acc, curr) => (
+  const volumeConfigs = volumeConfigsWithPath.map(({ volumeConfig }) => volumeConfig);
+
+  const parsedCommand = volumeConfigsWithPath.reduce((acc, curr) => (
     acc.replace(curr.argument, `$${curr.volumeConfig.mountPoint}`)
   ), command);
-
-  const volumeConfigs = volumeConfigsWithPathMatch.map(({ volumeConfig }) => volumeConfig);
 
   const azureCliCommand = createAzureCliCommand({
     userInput: parsedCommand,
@@ -54,19 +63,6 @@ async function execute({ command, credentials }) {
     }
     throw new Error(error.stderr ?? error.message ?? error);
   }
-}
-
-async function createVolumeConfigsWithPathMatch(command) {
-  const pathMatches = kaholoPluginLibrary.helpers.extractPathsFromCommand(command);
-
-  await validatePaths(pathMatches.map(({ path }) => path));
-
-  return pathMatches.map(
-    (pathMatch) => ({
-      volumeConfig: createDockerVolumeConfig(pathMatch.path),
-      ...pathMatch,
-    }),
-  );
 }
 
 function createAzureCliCommand({ userInput, areCredentialsProvided = true }) {

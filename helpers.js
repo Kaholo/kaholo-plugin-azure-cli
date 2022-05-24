@@ -33,13 +33,13 @@ function logToActivityLog(message) {
   console.error(message);
 }
 
-async function validatePaths(paths) {
+async function assertPathsExistance(paths) {
   const pathsArray = Array.isArray(paths) ? paths : [paths];
 
-  const pathPromises = pathsArray.map(pathExists);
-  const pathResults = await Promise.all(pathPromises);
+  const pathExistanceCheckPromises = pathsArray.map(pathExists);
+  const pathExistanceCheckResults = await Promise.all(pathExistanceCheckPromises);
 
-  const nonexistentPaths = pathsArray.filter((path, index) => !pathResults[index]);
+  const nonexistentPaths = pathsArray.filter((path, index) => !pathExistanceCheckResults[index]);
 
   if (nonexistentPaths.length === 1) {
     throw new Error(`Path ${nonexistentPaths[0]} does not exist!`);
@@ -64,6 +64,6 @@ function generateRandomString() {
 module.exports = {
   mapParamsToCredentialsAndValidate,
   logToActivityLog,
-  validatePaths,
+  assertPathsExistance,
   generateRandomString,
 };
