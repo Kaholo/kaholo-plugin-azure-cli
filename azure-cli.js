@@ -15,13 +15,13 @@ const exec = promisify(childProcess.exec);
 async function execute({ command, credentials }) {
   const areCredentialsProvided = Boolean(credentials);
 
-  const extractedPaths = kaholoPluginLibrary.helpers.extractPathsFromCommand(command);
-  await assertPathsExistence(extractedPaths.map(({ path }) => path));
+  const pathMatches = kaholoPluginLibrary.helpers.extractPathsFromCommand(command);
+  await assertPathsExistence(pathMatches.map(({ path }) => path));
 
-  const volumeConfigsWithPath = extractedPaths.map(
-    (extractedPath) => ({
-      volumeConfig: createDockerVolumeConfig(extractedPath.path),
-      ...extractedPath,
+  const volumeConfigsWithPath = pathMatches.map(
+    (pathMatch) => ({
+      volumeConfig: createDockerVolumeConfig(pathMatch.path),
+      ...pathMatch,
     }),
   );
 
