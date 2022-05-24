@@ -36,10 +36,10 @@ function logToActivityLog(message) {
 async function assertPathsExistence(paths) {
   const pathsArray = Array.isArray(paths) ? paths : [paths];
 
-  const pathExistanceCheckPromises = pathsArray.map(pathExists);
-  const pathExistanceCheckResults = await Promise.all(pathExistanceCheckPromises);
+  const pathExistenceCheckPromises = pathsArray.map(pathExists);
+  const pathExistenceCheckResults = await Promise.all(pathExistenceCheckPromises);
 
-  const nonexistentPaths = pathsArray.filter((path, index) => !pathExistanceCheckResults[index]);
+  const nonexistentPaths = pathsArray.filter((path, index) => !pathExistenceCheckResults[index]);
 
   if (nonexistentPaths.length === 1) {
     throw new Error(`Path ${nonexistentPaths[0]} does not exist!`);
