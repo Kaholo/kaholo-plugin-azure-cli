@@ -1,24 +1,61 @@
+const kaholoPluginLibrary = require("kaholo-plugin-library");
 const childProcess = require("child_process");
 const { promisify } = require("util");
-const { tryParseAzureCliOutput, createEnvironmentVariableArgumentsString, logToActivityLog } = require("./helpers");
 const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
+const { logToActivityLog, assertPathsExistence } = require("./helpers");
+const {
+  tryParseAzureCliOutput,
+  createDockerVolumeConfig,
+  createEnvironmentVariableArgumentsString,
+  createDockerVolumesString,
+} = require("./docker-helpers");
 
 const exec = promisify(childProcess.exec);
 
 async function execute({ command, credentials }) {
   const areCredentialsProvided = Boolean(credentials);
+
+  const pathMatches = kaholoPluginLibrary.helpers.extractPathsFromCommand(command);
+  await assertPathsExistence(pathMatches.map(({ path }) => path));
+
+  const volumeConfigsWithPath = pathMatches.map(
+    (pathMatch) => ({
+      volumeConfig: createDockerVolumeConfig(pathMatch.path),
+      ...pathMatch,
+    }),
+  );
+
+  const environmentVariables = volumeConfigsWithPath.reduce((acc, curr) => ({
+    ...acc,
+    ...curr.volumeConfig.environmentVariables,
+  }), {});
+  const volumeConfigs = volumeConfigsWithPath.map(({ volumeConfig }) => volumeConfig);
+
+  const parsedCommand = volumeConfigsWithPath.reduce((acc, curr) => (
+    acc.replace(curr.argument, `$${curr.volumeConfig.mountPoint}`)
+  ), command);
+
   const azureCliCommand = createAzureCliCommand({
-    userInput: command,
+    userInput: parsedCommand,
     areCredentialsProvided,
   });
   const dockerCommand = createDockerCommand({
     command: azureCliCommand,
-    environmentVariables: resolveEnvironmentVariables({ areCredentialsProvided }),
+    environmentVariables: [
+      ...resolveEnvironmentVariables({ areCredentialsProvided }),
+      ...Object.keys(environmentVariables),
+    ],
+    volumeConfigs,
   });
   logToActivityLog(`Generated Docker command: ${dockerCommand}`);
 
   try {
-    const output = await exec(dockerCommand, { env: credentials });
+    const output = await exec(dockerCommand, {
+      env: {
+        ...credentials,
+        ...environmentVariables,
+      },
+    });
     return tryParseAzureCliOutput(output);
   } catch (error) {
     if (error.stdout) {
@@ -48,13 +85,15 @@ function createAzureCliCommand({ userInput, areCredentialsProvided = true }) {
   return azureCliCommand;
 }
 
-function createDockerCommand({ command, environmentVariables }) {
+function createDockerCommand({ command, environmentVariables, volumeConfigs }) {
   const environmentVariablesString = createEnvironmentVariableArgumentsString(environmentVariables);
+  const volumesString = createDockerVolumesString(volumeConfigs);
   const stringifiedCommand = JSON.stringify(command);
+
   return `
-    docker run \
-    --rm \
+    docker run --rm \
     ${environmentVariablesString} \
+    ${volumesString} \
     ${DOCKER_IMAGE} sh -c ${stringifiedCommand}
   `.trim();
 }

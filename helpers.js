@@ -1,9 +1,13 @@
-function mapAndValidateCredentials(params) {
+const { access } = require("fs/promises");
+const fs = require("fs");
+
+function mapParamsToCredentialsAndValidate(params) {
   const credentials = {
     AZURE_SERVICE_PRINCIPAL_ID: params.servicePrincipalId,
     AZURE_SERVICE_PRINCIPAL_CREDENTIAL: params.servicePrincipalCredential,
     AZURE_TENANT_ID: params.tenantId,
   };
+
   let missingParameter = "";
   if (!credentials.AZURE_SERVICE_PRINCIPAL_ID) {
     missingParameter = "Service Principal ID";
@@ -17,21 +21,8 @@ function mapAndValidateCredentials(params) {
   if (missingParameter) {
     throw new Error(`Missing parameter "${missingParameter}". Please specify it in the action's parameters or plugin's settings.`);
   }
+
   return credentials;
-}
-
-function tryParseAzureCliOutput(output) {
-  try {
-    return { ...output, stdout: JSON.parse(output.stdout.trim()) };
-  } catch {
-    return output;
-  }
-}
-
-function createEnvironmentVariableArgumentsString(environmentVariables) {
-  return environmentVariables.map(
-    (environmentVariable) => `-e ${environmentVariable}`,
-  ).join(" ");
 }
 
 function logToActivityLog(message) {
@@ -42,9 +33,37 @@ function logToActivityLog(message) {
   console.error(message);
 }
 
+async function assertPathsExistence(paths) {
+  const pathsArray = Array.isArray(paths) ? paths : [paths];
+
+  const pathExistenceCheckPromises = pathsArray.map(pathExists);
+  const pathExistenceCheckResults = await Promise.all(pathExistenceCheckPromises);
+
+  const nonexistentPaths = pathsArray.filter((path, index) => !pathExistenceCheckResults[index]);
+
+  if (nonexistentPaths.length === 1) {
+    throw new Error(`Path ${nonexistentPaths[0]} does not exist!`);
+  } else if (nonexistentPaths.length > 1) {
+    throw new Error(`Paths ${nonexistentPaths.join(", ")} do not exist!`);
+  }
+}
+
+async function pathExists(path) {
+  try {
+    await access(path, fs.constants.F_OK);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+function generateRandomString() {
+  return Math.random().toString(36).slice(2);
+}
+
 module.exports = {
-  mapAndValidateCredentials,
-  tryParseAzureCliOutput,
-  createEnvironmentVariableArgumentsString,
+  mapParamsToCredentialsAndValidate,
   logToActivityLog,
+  assertPathsExistence,
+  generateRandomString,
 };
