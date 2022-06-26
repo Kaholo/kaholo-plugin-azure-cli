@@ -2,12 +2,6 @@ const { bootstrap } = require("kaholo-plugin-library");
 const { execute } = require("./azure-cli");
 const { mapParamsToCredentialsAndValidate } = require("./helpers");
 
-function getCliVersion() {
-  return execute({
-    command: "az version",
-  });
-}
-
 function runCommand(params) {
   const credentials = mapParamsToCredentialsAndValidate(params);
   return execute({
@@ -18,5 +12,4 @@ function runCommand(params) {
 
 module.exports = bootstrap({
   runCommand,
-  getCliVersion,
 });
