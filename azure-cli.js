@@ -1,4 +1,4 @@
-const kaholoPluginLibrary = require("kaholo-plugin-library");
+const kaholoPluginLibrary = require("@kaholo/plugin-library");
 const childProcess = require("child_process");
 const { promisify } = require("util");
 const { AZURE_LOGIN_COMMAND, DOCKER_IMAGE } = require("./consts.json");
