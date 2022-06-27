@@ -5,7 +5,7 @@
   "execProgram": "node",
   "main": "app.js",
   "imgUrl": "logo.png",
-  "version": "2.2.1",
+  "version": "3.0.0",
   "description": "Azure command-line interface (Azure CLI)",
   "category": "Cloud Management",
   "keywords": ["microsoft", "azure", "powershell", "platform", "vm", "instance", "cloud", "cluster", "storage", "account", "infrastructure", "cli", "command", "network", "subnetwork", "firewall", "route"],
