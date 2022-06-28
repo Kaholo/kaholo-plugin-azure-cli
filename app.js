@@ -1,4 +1,4 @@
-const { bootstrap } = require("kaholo-plugin-library");
+const { bootstrap } = require("@kaholo/plugin-library");
 const { execute } = require("./azure-cli");
 const { mapParamsToCredentialsAndValidate } = require("./helpers");
 
