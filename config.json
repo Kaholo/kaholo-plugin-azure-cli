@@ -37,7 +37,7 @@
   "methods": [
     {
       "name": "runCommand",
-      "viewName": "Run Command",
+      "viewName": "Run Azure CLI Command",
       "params": [
         {
           "name": "command",
