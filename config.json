@@ -40,6 +40,17 @@
       "viewName": "Run Azure CLI Command",
       "params": [
         {
+          "name": "workingDirectory",
+          "viewName": "Working Directory",
+          "type": "string",
+          "description": "Path to use as a working directory, must exist on the agent",
+          "parserType": "filePath",
+          "parserOptions": {
+            "acceptedTypes": ["directory"],
+            "throwIfDoesntExist": true
+          }
+        },
+        {
           "name": "command",
           "viewName": "Command",
           "type": "text",

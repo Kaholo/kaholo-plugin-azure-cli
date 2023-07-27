@@ -12,9 +12,15 @@ const {
 
 const exec = promisify(childProcess.exec);
 
-async function execute({ command, credentials }) {
+async function execute({
+  workingDirectory,
+  command,
+  credentials }) {
   const areCredentialsProvided = Boolean(credentials);
 
+  const resolvedWorkingDirectory = workingDirectory || await kaholoPluginLibrary.helpers.analyzePath("./");
+  const absWorkingDirectory = resolvedWorkingDirectory.absolutePath;
+  console.error(`WORKDIR: ${JSON.stringify(absWorkingDirectory)}`)
   const pathMatches = kaholoPluginLibrary.helpers.extractPathsFromCommand(command);
   await assertPathsExistence(pathMatches.map(({ path }) => path));
 
@@ -46,6 +52,7 @@ async function execute({ command, credentials }) {
       ...Object.keys(environmentVariables),
     ],
     volumeConfigs,
+    absWorkingDirectory,
   });
   logToActivityLog(`Generated Docker command: ${dockerCommand}`);
 
@@ -85,7 +92,7 @@ function createAzureCliCommand({ userInput, areCredentialsProvided = true }) {
   return azureCliCommand;
 }
 
-function createDockerCommand({ command, environmentVariables, volumeConfigs }) {
+function createDockerCommand({ command, environmentVariables, volumeConfigs, absWorkingDirectory }) {
   const environmentVariablesString = createEnvironmentVariableArgumentsString(environmentVariables);
   const volumesString = createDockerVolumesString(volumeConfigs);
   const stringifiedCommand = JSON.stringify(command);
@@ -94,6 +101,8 @@ function createDockerCommand({ command, environmentVariables, volumeConfigs }) {
     docker run --rm \
     ${environmentVariablesString} \
     ${volumesString} \
+    -v ${absWorkingDirectory}:${absWorkingDirectory} \
+    -w ${absWorkingDirectory} \
     ${DOCKER_IMAGE} sh -c ${stringifiedCommand}
   `.trim();
 }
