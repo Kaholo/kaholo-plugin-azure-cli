@@ -13,12 +13,12 @@ const exec = promisify(childProcess.exec);
 async function execute({
   workingDirectory,
   command,
-  credentials }) {
+  credentials,
+}) {
   const areCredentialsProvided = Boolean(credentials);
 
   const resolvedWorkingDirectory = workingDirectory || await kaholoPluginLibrary.helpers.analyzePath("./");
   const absWorkingDirectory = resolvedWorkingDirectory.absolutePath;
-  console.error(`WORKDIR: ${JSON.stringify(absWorkingDirectory)}`)
 
   const azureCliCommand = createAzureCliCommand({
     userInput: command,
