@@ -13,18 +13,14 @@ Azure CLI commands are easily recognizable because they all begin with `az`. Som
 
 The output of the command, which would normally appear in the command window, is made available in Final Result section of the Execution Results page in Kaholo. This is also downloadable and accessible in code as a JSON document.
 
+If you encounter any difficulties using this plugin, please do [let us know](https://kaholo.io/contact/).
+
 ## Use of Docker
 This plugin relies on the [Microsoft-provided docker container](https://docs.microsoft.com/en-us/cli/azure/run-azure-cli-docker) to run the Azure CLI. This has many upsides but a few downsides as well of which the user should be aware.
 
 If running your own Kaholo agents in a custom environment, you will have to ensure docker is installed and running on the agent and has sufficient privilege to retrieve the image and start a container. If the agent is already running in a container (kubernetes or docker) then this means a docker container running within another container.
 
 The first time the plugin is used on each agent, docker may spend a minute or two downloading the image. After that the delay of starting up another docker image each time is quite small, a second or two.
-
-Next, because the CLI is running inside a docker container, it will not have access to the filesystem on the agent. If for example you have used the Git plugin to clone a repository of Azure CLI template files to the agent, you might be tempted use run commands that reference them using `--template-file`. This is not yet supported.
-
-Lastly, the docker container is destroyed once the command has successfully run, so output files will also be destroyed. Instead please rely on the Kaholo Execution Results to view or use output.
-
-Should these limitations negatively impact on your use case, the Azure CLI can be installed on the agent and run via the Command Line plugin instead. A main purpose for this plugin is to help you avoid that inconvenience. If you encounter these or any other difficulties using this plugin, please do [let us know](https://kaholo.io/contact/).
 
 ## Access and Authentication
 Azure CLI has many ways to authenticate. The most common is using the CLI command `az login`, which redirects to an interactive web page to authenticate using a user identity and put security tokens on your local machine. This cannot work in automation, so instead a "Service Principal" is needed to use the plugin.
@@ -64,17 +60,21 @@ Because the first and especially the second parameter are secrets, they are stor
 For download, installation, upgrade, downgrade and troubleshooting of plugins in general, see [INSTALL.md](./INSTALL.md).
 
 ## Plugin Settings
-Plugin settings act as default parameter values. If configured in plugin settings, the action parameters may be left unconfigured. Action parameters configured anyway over-ride the plugin-level settings for that Action.
+Plugin Settings are accessible by clicking Plugins | Settings and then clicking on the name of this plugin, which is a blue hyperlink. There are no settings for this plugin but in the 2nd tab you'll find Kaholo Accounts. This is used to provide credentials for your Azure CLI commands and to optionally apply a set of them by default so they needn't be configured individually on an action-by-action basis.
 
-The settings for Azure CLI Plugin include the three discussed above in the [Access and Authentication](#Access-and-Authentication) section.
+The Kaholo Account for the Azure CLI Plugin includes the three items discussed above in the [Access and Authentication](#Access-and-Authentication) section.
 
 * Default Service Principal ID
 * Default Service Principal Credential
 * Default Tenant ID
 
-These are also required parameters to run any CLI command so it is convenient to configure them here, especially if you commonly work with a single service principal account.
+The account may also be configured at the action level, by first selecting a method and then choosing "Add New Plugin Account" from the drop-down menu for parameter "Account".
 
 ## Method Run Command ##
 The only method in the plugin is method `Run Command`. The required parameters include the same three discussed above in the [Access and Authentication](#Access-and-Authentication) section, and one more for the command itself.
 
-In the command parameter you may omit the `az` if you like, because every Azure CLI command begins with `az`. Only Azure CLI commands can be run using this plugin. If you want to run other commands please see the [Command Line plugin](https://github.com/Kaholo/kaholo-plugin-cmd) instead.
+### Parameter: Working Directory
+For Azure CLI commands that consume or produce files on disk, a working directory may be provided. This causes docker to mount the provided directory on the agent so its files and subdirectories are accessible from within the container running the Azure CLI command. If left unconfigured the default working directory will be used instead, e.g. `/twiddlebug/workspace`. Working directory may be either an absolute path on the Kaholo agent or a path relative to the default working directory.
+
+### Parameter: Command
+Only Azure CLI commands can be run using this plugin, i.e. commands that begin with `az`. If you want to run other commands please see the [Command Line plugin](https://github.com/Kaholo/kaholo-plugin-cmd) instead.
