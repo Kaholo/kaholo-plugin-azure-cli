@@ -11,6 +11,8 @@ Azure CLI commands are easily recognizable because they all begin with `az`. Som
 
     `az aks create --resource-group myResourceGroup --name myAKSCluster --node-count 1 --enable-addons monitoring --generate-ssh-keys`
 
+    `az sshkey create --name cookie-key --public-key @mydir/key.pub --resource-group kaholo-202307`
+
 The output of the command, which would normally appear in the command window, is made available in Final Result section of the Execution Results page in Kaholo. This is also downloadable and accessible in code as a JSON document.
 
 ## Use of Docker
