@@ -5,8 +5,8 @@
   "execProgram": "node",
   "main": "app.js",
   "imgUrl": "logo.png",
-  "version": "3.0.1",
-  "description": "Azure command-line interface (Azure CLI)",
+  "version": "3.1.0",
+  "description": "Azure CLI - commands used to create and manage Azure resources",
   "category": "Cloud Management",
   "keywords": [
     "microsoft",
