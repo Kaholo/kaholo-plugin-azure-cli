@@ -5,6 +5,7 @@ const { mapParamsToCredentialsAndValidate } = require("./helpers");
 function runCommand(params) {
   const credentials = mapParamsToCredentialsAndValidate(params);
   return execute({
+    workingDirectory: params.workingDirectory,
     command: params.command.trim(),
     credentials,
   });

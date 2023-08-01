@@ -5,30 +5,48 @@
   "execProgram": "node",
   "main": "app.js",
   "imgUrl": "logo.png",
-  "version": "3.0.1",
-  "description": "Azure command-line interface (Azure CLI)",
+  "version": "3.1.0",
+  "description": "Azure CLI - commands used to create and manage Azure resources",
   "category": "Cloud Management",
-  "keywords": ["microsoft", "azure", "powershell", "platform", "vm", "instance", "cloud", "cluster", "storage", "account", "infrastructure", "cli", "command", "network", "subnetwork", "firewall", "route"],
+  "keywords": [
+    "microsoft",
+    "azure",
+    "powershell",
+    "platform",
+    "vm",
+    "instance",
+    "cloud",
+    "cluster",
+    "storage",
+    "account",
+    "infrastructure",
+    "cli",
+    "command",
+    "network",
+    "subnetwork",
+    "firewall",
+    "route"
+  ],
   "auth": {
     "authId": "azureAccount",
-    "params" : [
+    "params": [
       {
         "name": "servicePrincipalId",
         "viewName": "Service Principal ID",
-        "description": "UUID of the Service Principal.",
+        "description": "UUID of the Service Principal",
         "type": "vault",
         "placeholder": "28cf11cad-2654-3721-6c7b-a89090db8abb"
       },
       {
         "name": "servicePrincipalCredential",
         "viewName": "Service Principal Credential",
-        "description": "Password or certificate for the Service Principal.",
+        "description": "Password or certificate for the Service Principal",
         "type": "vault"
       },
       {
         "name": "tenantId",
         "viewName": "Tenant ID",
-        "description": "UUID of the Tenant.",
+        "description": "UUID of the Tenant",
         "type": "string",
         "placeholder": "13bd1f78-5426-4ed3-c67b-d9a1a1ec9bc6"
       }
@@ -40,11 +58,24 @@
       "viewName": "Run Azure CLI Command",
       "params": [
         {
+          "name": "workingDirectory",
+          "viewName": "Working Directory",
+          "type": "string",
+          "description": "The directory on the Kaholo Agent were files may be read or created by the command, if applicable",
+          "parserType": "filePath",
+          "parserOptions": {
+            "acceptedTypes": [
+              "directory"
+            ],
+            "throwIfDoesntExist": true
+          }
+        },
+        {
           "name": "command",
           "viewName": "Command",
           "type": "text",
-          "description": "Azure CLI command to run in the docker container.",
-          "placeholder": "ad app permission add ...",
+          "description": "Azure CLI command to run",
+          "placeholder": "az vm list",
           "required": true
         }
       ]
